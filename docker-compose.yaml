@@ -1,0 +1,22 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: dockerfile
+    image: imagem-modelo:0.0.1
+    ports:
+      - 8000-8003:8000 #Em produção desativa o acesso direto.
+    volumes:
+      - ./src:/src
+    deploy:
+      replicas: 4
+    restart: always
+    command: uvicorn app:app --host 0.0.0.0 --port 8000 --reload
+    networks:
+      - rede_loadbalancer
+networks:
+  rede_loadbalancer:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.3.0.0/26 # 62 IPs válidos
